@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/server.mjs",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/server.mjs"
+    }
+  ],
+  "env": {
+    "MONGO_URI": "@mongo_uri",
+    "PORT": "3000",
+    "MARVEL_URL": "@marvel_url",
+    "MARVEL_TS": "@marvel_ts",
+    "MARVEL_APIKEY": "@marvel_apikey",
+    "MARVEL_HASH": "@marvel_hash"
+  }
+}

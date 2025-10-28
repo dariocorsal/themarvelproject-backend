@@ -198,4 +198,42 @@ router.post("/users/:firebaseUid/favorites", async (req, res) => {
   }
 });
 
+// DELETE /api/users/:firebaseUid/favorites/:marvelId - Remover favorito
+router.delete("/users/:firebaseUid/favorites/:marvelId", async (req, res) => {
+  try {
+    const { firebaseUid, marvelId } = req.params;
+
+    const user = await User.findOne({ firebaseUid });
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // Convertir marvelId a número ya que viene como string en params
+    const marvelIdNum = parseInt(marvelId);
+    
+    // Buscar el índice del favorito
+    const favoriteIndex = user.favorites.findIndex(f => f.marvelId === marvelIdNum);
+    
+    if (favoriteIndex === -1) {
+      return res.status(404).json({ error: "Favorito no encontrado" });
+    }
+
+    // Remover el favorito del array
+    user.favorites.splice(favoriteIndex, 1);
+    await user.save();
+
+    res.status(200).json({ 
+      message: "Favorito removido exitosamente",
+      removedId: marvelIdNum 
+    });
+
+  } catch (error) {
+    console.error("Error al remover favorito:", error);
+    res.status(500).json({ 
+      error: "Error al remover favorito", 
+      details: error.message 
+    });
+  }
+});
+
 export default router;
